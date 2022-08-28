@@ -45,6 +45,7 @@ func MiddleProx(e echo.Echo) {
 					return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/login",config.Prefix))
 				}
 			}
+
 		}, func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error { //privert
 				if serverMap["privert"].(bool) == true {
@@ -56,6 +57,7 @@ func MiddleProx(e echo.Echo) {
 				}
 				return next(c)
 			}
+			
 		}, middleware.Proxy(middleware.NewRandomBalancer(target)))
 	}
 }
