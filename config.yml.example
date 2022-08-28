@@ -1,0 +1,48 @@
+host: "localhost" #host is bind ip, Not domains
+port: 8080
+
+session:
+  maxAge: 18 #day
+  secure: false #true or false
+  httpOnly: true #true or false
+  mode: "cookie" #cookie or redis
+
+redis:
+  host: "localhost"
+  port: 3675
+  password: "password"
+
+
+#prfix (http://yourdomain/prefix/(login or after or etc..))
+prefix: "discord"
+
+oauth2:
+  client_id: "xxxxxxxxxxxxxxxxxxx"
+  client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  callback: "http://localhost:8080/discord/after"
+  guild_id: "xxxxxxxxxxxxxxxxxx"
+  roles:
+    # (RoleName): "(RoleID)" 
+    admin: "xxxxxxxxxxxxxxxxxxx"
+
+server:
+  # (serverName):
+  #   location: "/app" -> http://yourdomain/app
+  #   address: "http://backend/app" reverseAddress
+  #   privert: true or false <- roleCheck
+  #   access_roles: <- access possible roles
+  #     - "admin" <- RoleName => If it was privert - ""
+
+  example1:
+    location: "/example1"
+    address: "http://localhost:8081"
+    privert: false
+    access_roles:
+      - ""
+
+  example2:
+    location: "/example2"
+    address: "http://localhost:8082"
+    privert: true
+    access_roles:
+      - "admin"
