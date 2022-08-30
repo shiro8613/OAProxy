@@ -12,7 +12,7 @@ import (
 )
 
 func MiddleProx(e echo.Echo) {
-	config := modules.ConfigLoad()
+	config := modules.GetConfig()
 
 	for _, v := range config.Server {
 		serverMap := v.(map[interface{}]interface{})
@@ -31,8 +31,8 @@ func MiddleProx(e echo.Echo) {
 
 		g.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error { //session
-				seslogin := ReadSession(c, "login")
-				sesguild := ReadSession(c, "guild")
+				seslogin := modules.ReadSession(c, "login")
+				sesguild := modules.ReadSession(c, "guild")
 				
 				if seslogin == "true" {
 					if sesguild == "true" {
@@ -41,7 +41,7 @@ func MiddleProx(e echo.Echo) {
 						return c.String(http.StatusForbidden, "NoGuilds")
 					}
 				}else {
-					WriteSession(c, "urled", c.Request().URL.Path)
+					modules.WriteSession(c, "urled", c.Request().URL.Path)
 					return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/login",config.Prefix))
 				}
 			}
@@ -49,7 +49,7 @@ func MiddleProx(e echo.Echo) {
 		}, func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error { //privert
 				if serverMap["privert"].(bool) == true {
-					if modules.RoleTest(serverMap["access_roles"], ReadSession(c, "role")) {
+					if modules.RoleTest(serverMap["access_roles"], modules.ReadSession(c, "role")) {
 						return next(c)
 					}else {
 						return c.String(http.StatusForbidden, "NoRoles")

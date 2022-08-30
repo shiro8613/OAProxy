@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/flan0910/OAProxy/middler"
 	"github.com/flan0910/OAProxy/modules"
 
 	"github.com/labstack/echo/v4"
@@ -13,13 +12,13 @@ import (
 
 
 func Login(c echo.Context) error {
-	config := modules.ConfigLoad().Oauth2
+	config := modules.GetConfig().Oauth2
 	return c.Redirect(http.StatusFound, fmt.Sprintf("https://discord.com/api/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=identify guilds guilds.members.read", config["client_id"].(string),config["callback"].(string)))
 }
 
 func LoginAfter(c echo.Context) error {
 	r := c.Request()
-	config := modules.ConfigLoad()
+	config := modules.GetConfig()
 	code := r.URL.Query().Get("code")
 
 	pData := url.Values{}
@@ -31,38 +30,31 @@ func LoginAfter(c echo.Context) error {
 	res := modules.XPoster("https://discordapp.com/api/oauth2/token", pData)
 	ddata := modules.Decoder(res)
 	token := ddata.(map[string]interface{})["access_token"].(string)
-	middler.WriteSession(c, "login", "true")
-	return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/guild?token=%s", config.Prefix, token))
-}
+	modules.WriteSession(c, "login", "true")
 
-func LoginGuild(c echo.Context) error {
-	r := c.Request()
-	config := modules.ConfigLoad()
-	token := r.URL.Query().Get("token")
 	heads := http.Header{}
 	heads.Add("Authorization", fmt.Sprintf("Bearer %s",token))
-	res := modules.XGet("https://discordapp.com/api/v6/users/@me/guilds", heads)
-	ddata := modules.Decoder_in(res)
+	res1 := modules.XGet("https://discordapp.com/api/v6/users/@me/guilds", heads)
+	ddata1 := modules.Decoder_in(res1)
 
-	if modules.Filter(ddata, "id", (config.Oauth2)["guild_id"].(string)) {
-		middler.WriteSession(c, "guild", "true")
-		return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/user?token=%s", config.Prefix, token))
+	if modules.Filter(ddata1, "id", (config.Oauth2)["guild_id"].(string)) {
+		modules.WriteSession(c, "guild", "true")
+			
+		heads := http.Header{}
+		heads.Add("Authorization", "Bearer "+token)
+		res := modules.XGet(fmt.Sprintf("https://discordapp.com/api/v6/users/@me/guilds/%s/member", (config.Oauth2)["guild_id"].(string)), heads)
+		jdata := modules.LoginUserParse(res)
+		ip := c.RealIP()
+		name := jdata.User.(map[string]interface{})["username"].(string)
+		id := jdata.User.(map[string]interface{})["id"].(string)
+		disc := jdata.User.(map[string]interface{})["discriminator"].(string)
+		modules.AppendUser(fmt.Sprintf("ip:%s, id:%s, Name:%s, Nick:%s",ip, id, fmt.Sprintf("%s#%s",name,disc), jdata.Nick))
+		modules.WriteSession(c, "name", fmt.Sprintf("%s/%s#%s", jdata.Nick, name, disc))
+		modules.WriteSession(c, "id", id)
+		modules.WriteSession(c, "role", modules.CheckRole(jdata.Roles))
+		return c.Redirect(http.StatusFound, fmt.Sprintf("%v", modules.FalseToSlash(modules.ReadSession(c, "urled"))))
+	
 	} else {
 		return c.String(http.StatusForbidden, "JoinGuild")
 	}
-
-}
-
-func LoginUser(c echo.Context) error {
-	r := c.Request()
-	config := modules.ConfigLoad()
-	token := r.URL.Query().Get("token")
-	heads := http.Header{}
-	heads.Add("Authorization", "Bearer "+token)
-	res := modules.XGet(fmt.Sprintf("https://discordapp.com/api/v6/users/@me/guilds/%s/member", (config.Oauth2)["guild_id"].(string)), heads)
-	jdata := modules.LoginUserParse(res)
-	middler.WriteSession(c, "name", fmt.Sprintf("%s/%s\n", jdata.Nick, jdata.User.(map[string]interface{})["username"].(string)))
-	middler.WriteSession(c, "id", fmt.Sprintln(jdata.User.(map[string]interface{})["id"].(string)))
-	middler.WriteSession(c, "role", modules.CheckRole(jdata.Roles))
-	return c.Redirect(http.StatusFound, fmt.Sprintf("%v", middler.FalseToSlash(middler.ReadSession(c, "urled"))))
 }

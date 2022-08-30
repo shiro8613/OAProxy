@@ -13,24 +13,26 @@ import (
 )
 
 func main() {
-	config := modules.ConfigLoad()
+	modules.ParseFlag()
+	modules.LogFolderCreate()
+	modules.ConfigLoad()
+
+	config := modules.GetConfig()
 
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	e.HideBanner = true
+
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(modules.StoreCreate()))
-
-
+	middler.MiddleProx(*e)
+	e.Use(modules.EchoLogger)
+	//e.Use(middleware.Logger())
 
 	e.GET("/", handler.SlashAccess)
 	e.GET(fmt.Sprintf("/%s/login", config.Prefix), handler.Login)
 	e.GET(fmt.Sprintf("/%s/logout", config.Prefix), handler.Logout)
 	e.GET(fmt.Sprintf("/%s/after", config.Prefix), handler.LoginAfter)
-	e.GET(fmt.Sprintf("/%s/guild", config.Prefix), handler.LoginGuild)
-	e.GET(fmt.Sprintf("/%s/user", config.Prefix), handler.LoginUser)
-
-	middler.MiddleProx(*e)
 
 	modules.Logger("error", e.Start(fmt.Sprintf("%s:%d", config.Host, config.Port)).Error())
 

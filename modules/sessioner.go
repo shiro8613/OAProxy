@@ -1,4 +1,4 @@
-package middler
+package modules
 
 import (
 	"github.com/labstack/echo-contrib/session"

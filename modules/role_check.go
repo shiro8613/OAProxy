@@ -3,7 +3,7 @@ package modules
 import "encoding/json"
 
 func CheckRole(inter []interface{}) string{
-	roles := (ConfigLoad().Oauth2)["roles"].(map[interface{}]interface{})
+	roles := (GetConfig().Oauth2)["roles"].(map[interface{}]interface{})
 	var myroles []string
 
 	for _, v := range inter {

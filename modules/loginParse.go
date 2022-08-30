@@ -2,7 +2,6 @@ package modules
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type LoginUserConf struct {
@@ -18,6 +17,5 @@ func LoginUserParse(data string) LoginUserConf {
 		Logger("error", err.Error())
 	}
 
-	fmt.Println(Luc)
 	return Luc
 }

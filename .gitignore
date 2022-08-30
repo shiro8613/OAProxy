@@ -6,6 +6,7 @@
 *.dylib
 *.yaml
 *.yml
+*.log
 
 Logs
 

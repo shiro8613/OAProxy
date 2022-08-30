@@ -1,17 +1,19 @@
 package modules
 
 import (
+	"fmt"
+
 	"github.com/gorilla/sessions"
 	session "github.com/ipfans/echo-session"
 )
 
 func StoreCreate() sessions.Store {
-	config := ConfigLoad()
+	config := GetConfig()
 	key := Cryper()
 	Age := config.Session["maxAge"].(int) * 86400
 	if config.Session["mode"].(string) == "redis" {
-		addr := ""
-		storeRedis, err := session.NewRedisStore(32,"tcp",addr,"",key)
+		addr := fmt.Sprintf("%s:%d", config.Redis["host"].(string), config.Redis["port"].(int))
+		storeRedis, err := session.NewRedisStore(32, "tcp", addr, config.Redis["password"].(string), key)
 		storeRedis.Options(session.Options{
 			MaxAge: Age,
 			Secure: config.Session["secure"].(bool),

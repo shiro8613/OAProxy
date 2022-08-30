@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v2"
@@ -21,15 +20,25 @@ type config struct {
 	Server map[interface{}]interface{} `yaml:"server"`
 }
 
-func ConfigLoad() config{
+var configer []config
+
+func ConfigLoad() {
 	config := config{}
-	b, err := os.ReadFile("./config.yml")
+	path := GetFlag().Config_path
+	b, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
+		Logger("error", err.Error())
 	}
 
 	yaml.Unmarshal(b, &config)
-	return config
+	
+	configer = append(configer, config)
 
+}
+
+func GetConfig() config {
+	for _, v := range configer {
+		return v
+	}
+	return configer[0]
 }
