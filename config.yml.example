@@ -29,20 +29,20 @@ server:
   # (serverName):
   #   location: "/app" -> http://yourdomain/app
   #   address: "http://backend/app" reverseAddress
-  #   privert: true or false <- roleCheck
+  #   privart: true or false <- roleCheck
   #   access_roles: <- access possible roles
-  #     - "admin" <- RoleName => If it was privert - ""
+  #     - "admin" <- RoleName => If it was privart - ""
 
   example1:
     location: "/example1"
     address: "http://localhost:8081"
-    privert: false
+    privart: false
     access_roles:
       - ""
 
   example2:
     location: "/example2"
     address: "http://localhost:8082"
-    privert: true
+    privart: true
     access_roles:
       - "admin"

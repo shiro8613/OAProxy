@@ -48,7 +48,7 @@ func MiddleProx(e echo.Echo) {
 
 		}, func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error { //privert
-				if serverMap["privert"].(bool) == true {
+				if serverMap["privart"].(bool) == true {
 					if modules.RoleTest(serverMap["access_roles"], modules.ReadSession(c, "role")) {
 						return next(c)
 					}else {
