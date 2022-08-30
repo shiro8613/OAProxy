@@ -36,4 +36,8 @@ func main() {
 
 	modules.Logger("error", e.Start(fmt.Sprintf("%s:%d", config.Host, config.Port)).Error())
 
+	//Todo: https
+	//https機能実装時にhttpのサーバーも指定のポートで起動してリダイレクトするようにする。
+	//configLoaderの修正も必要そう
+	//modules.Logger("error", e.StartTLS(fmt.Sprintf("%s:%d", config.Host, config.https["port"]), config.https["cert"] , config.https["key"]))
 }

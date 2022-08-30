@@ -10,6 +10,8 @@ type config struct {
 	Host string `yaml:"host"`
 	Port int `yaml:"port"`
 
+	//Https map[string]interface{} `yaml:"https"` <- https用
+
 	Session map[string]interface{} `yaml:"session"`
 	Redis map[string]interface{} `yaml:"redis"`
 
