@@ -1,5 +1,12 @@
 host: "localhost" #host is bind ip, Not domains
 port: 8080
+domain: web.example.com
+
+https:
+  enable: true
+  port: 443
+  cert: /etc/ssl/cert.pem
+  key: /etc/ssl/key.pem
 
 session:
   maxAge: 18 #day

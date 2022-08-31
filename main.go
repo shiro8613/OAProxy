@@ -24,6 +24,7 @@ func main() {
 	e.HideBanner = true
 
 	e.Use(middleware.Recover())
+	e.Use(middler.DomainCheck)
 	e.Use(session.Middleware(modules.StoreCreate()))
 	middler.MiddleProx(*e)
 	e.Use(modules.EchoLogger)
@@ -34,10 +35,13 @@ func main() {
 	e.GET(fmt.Sprintf("/%s/logout", config.Prefix), handler.Logout)
 	e.GET(fmt.Sprintf("/%s/after", config.Prefix), handler.LoginAfter)
 
-	modules.Logger("error", e.Start(fmt.Sprintf("%s:%d", config.Host, config.Port)).Error())
+	if config.Https.Enable {
+		if config.Domain == ""{
+			modules.Logger("error", "You need a domain to use https")
+		}
+		modules.Logger("error", e.StartTLS(fmt.Sprintf("%s:%d", config.Domain, config.Https.Port), config.Https.Cert, config.Https.Key).Error())
+	}else {
+		modules.Logger("error", e.Start(fmt.Sprintf("%s:%d", config.Host, config.Port)).Error())
+	}
 
-	//Todo: https
-	//https機能実装時にhttpのサーバーも指定のポートで起動してリダイレクトするようにする。
-	//configLoaderの修正も必要そう
-	//modules.Logger("error", e.StartTLS(fmt.Sprintf("%s:%d", config.Host, config.https["port"]), config.https["cert"] , config.https["key"]))
 }
