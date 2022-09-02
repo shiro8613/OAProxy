@@ -1,12 +1,12 @@
 package modules
 
 import (
-	"time"
-	"os"
 	"fmt"
+	"os"
+	"time"
 )
 
-func AppendUser(content string) {
+func AppendUser(ip string,	id string, name string, disc string, nick string ) {
 	path := GetFlag().UserList_path
 	time := time.Now().Local().Format(time.RFC1123)
 
@@ -15,6 +15,7 @@ func AppendUser(content string) {
 		Logger("error", err.Error())
     }
     defer file.Close()
-    fmt.Fprintln(file, fmt.Sprintf("%s => %s", time, content))
+	d := fmt.Sprintf("ip:%s, id:%s, Name:%s, Nick:%s",ip, id, fmt.Sprintf("%s#%s",name ,disc),nick)
+	fmt.Fprintln(file, fmt.Sprintf("%s => %s", time, d))
 
 }

@@ -48,7 +48,7 @@ func LoginAfter(c echo.Context) error {
 		name := jdata.User.(map[string]interface{})["username"].(string)
 		id := jdata.User.(map[string]interface{})["id"].(string)
 		disc := jdata.User.(map[string]interface{})["discriminator"].(string)
-		modules.AppendUser(fmt.Sprintf("ip:%s, id:%s, Name:%s, Nick:%s",ip, id, fmt.Sprintf("%s#%s",name,disc), jdata.Nick))
+		go modules.AppendUser(ip, id, name, disc, jdata.Nick)
 		modules.WriteSession(c, "name", fmt.Sprintf("%s/%s#%s", jdata.Nick, name, disc))
 		modules.WriteSession(c, "id", id)
 		modules.WriteSession(c, "role", modules.CheckRole(jdata.Roles))
