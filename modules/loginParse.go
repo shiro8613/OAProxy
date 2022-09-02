@@ -4,10 +4,17 @@ import (
 	"encoding/json"
 )
 
+
+type user struct {
+	Username string			`map:"username"`
+	Discriminator string	`map:"discriminator"`
+	Id string				`map:"id"`
+}
+
 type LoginUserConf struct {
-	Nick string `json:"nick"`
-	User interface{} `json:"user"`
-	Roles []interface{} `json:"roles"`
+	Nick	string			`json:"nick"`
+	User	user 			`json:"user"`
+	Roles 	[]interface{}	`json:"roles"`
 }
 
 func LoginUserParse(data string) LoginUserConf {

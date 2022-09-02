@@ -45,9 +45,9 @@ func LoginAfter(c echo.Context) error {
 		res := modules.XGet(fmt.Sprintf("https://discordapp.com/api/v6/users/@me/guilds/%d/member", config.Oauth2.Guild_id), heads)
 		jdata := modules.LoginUserParse(res)
 		ip := c.RealIP()
-		name := jdata.User.(map[string]interface{})["username"].(string)
-		id := jdata.User.(map[string]interface{})["id"].(string)
-		disc := jdata.User.(map[string]interface{})["discriminator"].(string)
+		name := jdata.User.Username
+		id := jdata.User.Id
+		disc := jdata.User.Discriminator
 		go modules.AppendUser(ip, id, name, disc, jdata.Nick)
 		modules.WriteSession(c, "name", fmt.Sprintf("%s/%s#%s", jdata.Nick, name, disc))
 		modules.WriteSession(c, "id", id)
