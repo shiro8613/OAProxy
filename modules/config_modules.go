@@ -13,21 +13,44 @@ type https_conf struct {
 	Key		string	`map:"key"`
 }
 
+type session_conf struct {
+	MaxAge		int		`map:"maxAge"`
+	Secure		bool	`map:"secure"`
+	HttpOnly	bool	`map:"httpOnly"`
+	Mode		string	`map:"mode"`
+}
+
+type redis_conf struct {
+	Host		string	`map:"host"`
+	Port		int		`map:"port"`
+	Password	string	`map:"password"`
+}
+
+type oauth2_conf struct	 {
+	Client_id		int64				`map:"client_id"`
+	Client_secret	string				`map:"client_secret"`
+	Callback		string				`map:"callback"`
+	Guild_id		int64				`map:"guild_id"`
+	Roles			map[string]int64	`map:"roles"`
+}
+
+type server_conf struct {
+	Location		string		`map:"location"`
+	Address			string		`map:"address"`
+	Privart			bool		`map:"privart"`
+	Access_roles	[]string	`map:"access_roles"`
+}
+
 type config struct {
-	Host	string	`yaml:"host"`
-	Port	int		`yaml:"port"`
-	Domain	string	`yaml:"domain"`
-
-	Https	https_conf	`yaml:"https"`
-
-	Session map[string]interface{}		`yaml:"session"`
-	Redis	map[string]interface{}		`yaml:"redis"`
-
-	Prefix	string `yaml:"prefix"`
-
-	Oauth2	map[string]interface{}		`yaml:"oauth2"`
-
-	Server	map[interface{}]interface{} `yaml:"server"`
+	Host	string					`yaml:"host"`
+	Port	int						`yaml:"port"`
+	Domain	string					`yaml:"domain"`
+	Https	https_conf				`yaml:"https"`
+	Session session_conf			`yaml:"session"`
+	Redis	redis_conf				`yaml:"redis"`
+	Prefix	string 					`yaml:"prefix"`
+	Oauth2	oauth2_conf				`yaml:"oauth2"`
+	Server	map[string]server_conf	`yaml:"server"`
 }
 
 var configer []config

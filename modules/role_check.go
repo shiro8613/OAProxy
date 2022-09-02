@@ -3,13 +3,13 @@ package modules
 import "encoding/json"
 
 func CheckRole(inter []interface{}) string{
-	roles := (GetConfig().Oauth2)["roles"].(map[interface{}]interface{})
+	roles := GetConfig().Oauth2.Roles
 	var myroles []string
 
 	for _, v := range inter {
 		for key, value := range roles {
 			if value == v {
-				myroles = append(myroles, key.(string))
+				myroles = append(myroles, key)
 			}
 		}
 	}

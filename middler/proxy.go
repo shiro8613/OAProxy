@@ -14,11 +14,10 @@ import (
 func MiddleProx(e echo.Echo) {
 	config := modules.GetConfig()
 
-	for _, v := range config.Server {
-		serverMap := v.(map[interface{}]interface{})
+	for _, serverMap := range config.Server {
 
-		g := e.Group(serverMap["location"].(string))
-		urls, err := url.Parse(serverMap["address"].(string))
+		g := e.Group(serverMap.Location)
+		urls, err := url.Parse(serverMap.Address)
 		if err != nil {
 			modules.Logger("error", err.Error())
 		}
@@ -48,8 +47,8 @@ func MiddleProx(e echo.Echo) {
 
 		}, func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error { //privert
-				if serverMap["privart"].(bool) == true {
-					if modules.RoleTest(serverMap["access_roles"], modules.ReadSession(c, "role")) {
+				if serverMap.Privart == true {
+					if modules.RoleTest(serverMap.Access_roles, modules.ReadSession(c, "role")) {
 						return next(c)
 					}else {
 						return c.String(http.StatusForbidden, "NoRoles")

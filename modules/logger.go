@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func EchoLogger(next echo.HandlerFunc) echo.HandlerFunc{
+func EchoLogger(next echo.HandlerFunc) echo.HandlerFunc {
 	return func (c echo.Context) error {
 		res := c.Response()
 		req := c.Request()
@@ -28,12 +28,12 @@ func EchoLogger(next echo.HandlerFunc) echo.HandlerFunc{
 func Logger(mode string, content string) {
 	switch mode {
 	case "error":
-		LogWrite(content)
+		go LogWrite(content)
 		color.Print("<red>[ERROR]</>"+content+"\n")
 		os.Exit(0)	
 
 	case "info":
-		LogWrite(content)
+		go LogWrite(content)
 		color.Print("<green>[INFO]</>"+content+"\n")
 		return
 	

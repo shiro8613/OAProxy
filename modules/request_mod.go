@@ -2,13 +2,13 @@ package modules
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
 	"time"
-
 )
 
 func XPoster(url string, PostData url.Values) string {
@@ -61,10 +61,10 @@ func XGet(url string, header http.Header) string {
 
 }
 
-func Filter(mapData interface{}, CutData string, target string) bool {
+func Filter(mapData interface{}, CutData string, target int64) bool {
 	leng := reflect.ValueOf(mapData).Len()
 	for i := 0; i < leng; i++ {
-		if mapData.([]interface{})[i].(map[string]interface{})[CutData].(string) == target {
+		if mapData.([]interface{})[i].(map[string]interface{})[CutData].(string) == fmt.Sprintf("%d", target) {
 			return true
 		}
 	}
