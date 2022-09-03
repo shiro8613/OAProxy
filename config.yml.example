@@ -32,6 +32,8 @@ oauth2:
     # (RoleName): "(RoleID)" 
     admin: "xxxxxxxxxxxxxxxxxxx"
 
+redirect_after_login: /example1
+
 server:
   # (serverName):
   #   location: "/app" -> http://yourdomain/app
@@ -50,6 +52,45 @@ server:
   example2:
     location: "/example2"
     address: "http://localhost:8082"
+    privart: false
+    access_roles:
+      - ""
+
+  example3:
+    location: "/example3"
+    address: "http://localhost:8083"
     privart: true
     access_roles:
       - "admin"
+
+
+need_login:
+  - example3
+
+
+external_host_pages:
+  slash_access:
+    enable: false
+    redirect: false
+    address: http://localhost:8083
+
+  after_logout:
+    enable: false
+    redirect: false
+    address: http://localhost:8084
+
+
+  guild_error:
+    enable: true
+    redirect: false
+    address: http://localhost:8085
+
+  login_error: #Discordにすらログインできていないときに出る幻のエラーです。
+    enable: true
+    redirect: false
+    address: http://localhost:8086
+
+  privart_error:
+    enable: false
+    redirect: false
+    address: http://localhost:8087

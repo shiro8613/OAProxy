@@ -21,6 +21,10 @@ func LoginAfter(c echo.Context) error {
 	config := modules.GetConfig()
 	code := r.URL.Query().Get("code")
 
+	if code == "" {
+		return modules.LoginErrorPages(c)
+	}
+
 	pData := url.Values{}
 	pData.Add("client_id",	fmt.Sprintf("%d", config.Oauth2.Client_id))
 	pData.Add("client_secret", config.Oauth2.Client_secret)
@@ -52,9 +56,9 @@ func LoginAfter(c echo.Context) error {
 		modules.WriteSession(c, "name", fmt.Sprintf("%s/%s#%s", jdata.Nick, name, disc))
 		modules.WriteSession(c, "id", id)
 		modules.WriteSession(c, "role", modules.CheckRole(jdata.Roles))
-		return c.Redirect(http.StatusFound, fmt.Sprintf("%v", modules.FalseToSlash(modules.ReadSession(c, "urled"))))
+		return c.Redirect(http.StatusFound, fmt.Sprintf("%v", modules.FalseToConvert(modules.ReadSession(c, "urled"))))
 	
 	} else {
-		return c.String(http.StatusForbidden, "JoinGuild")
+		return modules.GuildErrorPages(c)
 	}
 }

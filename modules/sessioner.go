@@ -26,9 +26,10 @@ func DeleteSession(c echo.Context) {
 	sess.Save(c.Request(), c.Response())
 }
 
-func FalseToSlash(path string) string {
+func FalseToConvert(path string) string {
+	config := GetConfig().Redirectafter
 	if path == "false" {
-		return "/"
+		return config
 	}
 	return path
 }

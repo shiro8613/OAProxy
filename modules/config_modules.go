@@ -1,8 +1,10 @@
 package modules
 
 import (
+	"fmt"
 	"os"
 	"regexp"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -14,9 +16,9 @@ type https_conf struct {
 }
 
 type session_conf struct {
-	MaxAge		int		`map:"maxAge"`
+	MaxAge		int		`map:"maxage"`
 	Secure		bool	`map:"secure"`
-	HttpOnly	bool	`map:"httpOnly"`
+	HttpOnly	bool	`map:"httponly"`
 	Mode		string	`map:"mode"`
 }
 
@@ -40,17 +42,25 @@ type server_conf struct {
 	Privart			bool		`map:"privart"`
 	Access_roles	[]string	`map:"access_roles"`
 }
+type externalhost_conf struct {
+	Enable		bool 	`map:"enable"`
+	Redirect	bool	`map:"redirect"`
+	Address		string	`map:"address"`
+}
 
 type config struct {
-	Host	string					`yaml:"host"`
-	Port	int						`yaml:"port"`
-	Domain	string					`yaml:"domain"`
-	Https	https_conf				`yaml:"https"`
-	Session session_conf			`yaml:"session"`
-	Redis	redis_conf				`yaml:"redis"`
-	Prefix	string 					`yaml:"prefix"`
-	Oauth2	oauth2_conf				`yaml:"oauth2"`
-	Server	map[string]server_conf	`yaml:"server"`
+	Host			string							`yaml:"host"`
+	Port			int								`yaml:"port"`
+	Domain			string							`yaml:"domain"`
+	Https			https_conf						`yaml:"https"`
+	Session 		session_conf					`yaml:"session"`
+	Redis			redis_conf						`yaml:"redis"`
+	Prefix			string 							`yaml:"prefix"`
+	Oauth2			oauth2_conf						`yaml:"oauth2"`
+	Server			map[string]server_conf			`yaml:"server"`
+	NeedLogin		[]string						`yaml:"need_login"`
+	Redirectafter	string							`yaml:"redirect_after_login"`
+	ExternalHost	map[string]externalhost_conf	`yaml:"external_host_pages"`
 }
 
 var configer []config
@@ -66,10 +76,12 @@ func ConfigLoad() {
 
 	yaml.Unmarshal(b, &config)
 
+	fmt.Println(config)
+
 	if rg.MatchString(config.Domain) {
 		Logger("error", "Enter your domain in this format example.com or xxx.example.com")
 	}
-	
+
 	configer = append(configer, config)
 
 }

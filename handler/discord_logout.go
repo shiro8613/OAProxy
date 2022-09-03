@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"net/http"
 
 	"github.com/flan0910/OAProxy/modules"
 
@@ -9,6 +8,13 @@ import (
 )
 
 func Logout(c echo.Context) error {
-	modules.DeleteSession(c)
-	return c.String(http.StatusOK, "ログアウトが完了しました。ページを閉じてください。")
+	seslogin := modules.ReadSession(c, "login")
+	sesguild := modules.ReadSession(c, "guild")
+
+	if seslogin == "true" || sesguild == "true" {
+		modules.DeleteSession(c)
+		return modules.AfterLogout(c)
+	} else {
+		return modules.GuildErrorPages(c)
+	}
 }

@@ -26,14 +26,16 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middler.DomainCheck)
 	e.Use(session.Middleware(modules.StoreCreate()))
-	middler.MiddleProx(*e)
 	e.Use(modules.EchoLogger)
 	//e.Use(middleware.Logger())
 
-	e.GET("/", handler.SlashAccess)
+
+	middler.ExternalSlash(*e)
 	e.GET(fmt.Sprintf("/%s/login", config.Prefix), handler.Login)
 	e.GET(fmt.Sprintf("/%s/logout", config.Prefix), handler.Logout)
 	e.GET(fmt.Sprintf("/%s/after", config.Prefix), handler.LoginAfter)
+
+	middler.MiddleProx(*e)
 
 	if config.Https.Enable {
 		if config.Domain == ""{

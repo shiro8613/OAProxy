@@ -15,11 +15,12 @@ func SlashAccess(c echo.Context) error {
 	sesguild := modules.ReadSession(c, "guild")
 	if seslogin == "true" {
 		if sesguild == "true" {
-			return c.String(http.StatusOK, "LoginOK")
+			return c.HTML(http.StatusOK, "<h1>LoginComplited!</h1>")
 		}else {
-			return c.String(http.StatusForbidden, "JoinGuild")
+			return modules.GuildErrorPages(c)
 		}
 	}else {
 		modules.WriteSession(c, "urled", c.Request().URL.Path)
 		return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/login", prefix))	
-	}}
+	}
+}

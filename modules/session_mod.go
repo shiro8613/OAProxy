@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gorilla/sessions"
-	session "github.com/ipfans/echo-session"
+	"gopkg.in/boj/redistore.v1"
+
 )
 
 func StoreCreate() sessions.Store {
@@ -13,24 +14,23 @@ func StoreCreate() sessions.Store {
 	Age := config.Session.MaxAge * 86400
 	if config.Session.Mode == "redis" {
 		addr := fmt.Sprintf("%s:%d", config.Redis.Host, config.Redis.Port)
-		storeRedis, err := session.NewRedisStore(32, "tcp", addr, config.Redis.Password, key)
-		storeRedis.Options(session.Options{
-			MaxAge: Age,
-			Secure: config.Session.Secure,
-			HttpOnly: config.Session.HttpOnly,
-		})
+		store, err := redistore.NewRediStore(10, "tcp", addr, config.Redis.Password, key)
 		if err != nil {
 			Logger("error", err.Error())
-		}	
+		}		
+		defer store.Close()
 
-		return storeRedis
-	
-	}else {
+		store.DefaultMaxAge = Age
+		store.Options.Secure = config.Session.Secure
+		store.Options.HttpOnly = config.Session.HttpOnly
 		
-		storeC := sessions.NewCookieStore(key)
-		storeC.Options.MaxAge = Age
-		storeC.Options.Secure = config.Session.Secure
-		storeC.Options.HttpOnly = config.Session.HttpOnly
-		return storeC
+		return store
+	}else {
+		store := sessions.NewCookieStore(key)
+		store.Options.MaxAge = Age
+		store.Options.Secure = config.Session.Secure
+		store.Options.HttpOnly = config.Session.HttpOnly
+
+		return store
 	}
 }
