@@ -7,7 +7,7 @@
 *.yaml
 *.yml
 *.log
-*.ps1
+*.bat
 
 Logs
 Build
