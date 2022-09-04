@@ -10,7 +10,7 @@ func AppendUser(ip string,	id string, name string, disc string, nick string ) {
 	path := GetFlag().UserList_path
 	time := time.Now().Local().Format(time.RFC1123)
 
-	file, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0755)
     if err != nil {
 		Logger("error", err.Error())
     }
