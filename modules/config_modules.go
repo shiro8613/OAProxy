@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"fmt"
 	"os"
 	"regexp"
 
@@ -75,8 +74,6 @@ func ConfigLoad() {
 	}
 
 	yaml.Unmarshal(b, &config)
-
-	fmt.Println(config)
 
 	if rg.MatchString(config.Domain) {
 		Logger("error", "Enter your domain in this format example.com or xxx.example.com")

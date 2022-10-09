@@ -10,7 +10,7 @@ import (
 )
 
 func SlashAccess(c echo.Context) error {
-	prefix := modules.GetConfig().Prefix
+	config := modules.GetConfig()
 	seslogin := modules.ReadSession(c, "login")
 	sesguild := modules.ReadSession(c, "guild")
 	if seslogin == "true" {
@@ -21,6 +21,6 @@ func SlashAccess(c echo.Context) error {
 		}
 	}else {
 		modules.WriteSession(c, "urled", c.Request().URL.Path)
-		return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/login", prefix))	
+		return c.Redirect(http.StatusFound, fmt.Sprintf("/%s/login", config.Prefix))	
 	}
 }

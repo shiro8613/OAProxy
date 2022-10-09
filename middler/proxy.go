@@ -17,7 +17,6 @@ func MiddleProx(e echo.Echo) {
 	for key, serv := range config.Server {
 		serverMap := serv
 		keysd := key
-		fmt.Println(serverMap)
 
 		if serverMap.Location == "/" {
 			modules.Logger("error", "/ is not supported! If you want to set /, enable slash_access of external_host_pages and set the address")
@@ -56,7 +55,6 @@ func MiddleProx(e echo.Echo) {
 
 				}, func(next echo.HandlerFunc) echo.HandlerFunc {
 					return func(c echo.Context) error { //privert
-						fmt.Println(serverMap)
 						if serverMap.Privart {
 							if modules.RoleTest(serverMap.Access_roles, modules.ReadSession(c, "role")) {
 								return next(c)
