@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,10 @@ import (
 	"time"
 )
 
+var tr = &http.Transport{
+	TLSClientConfig: &tls.Config{InsecureSkipVerify : true},
+}
+
 func XPoster(url string, PostData url.Values) string {
 	body := strings.NewReader(PostData.Encode())
 	req, err := http.NewRequest("POST", url, body)
@@ -20,7 +25,7 @@ func XPoster(url string, PostData url.Values) string {
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: 30 * time.Second, Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
 		Logger("error", err.Error())
@@ -44,7 +49,7 @@ func XGet(url string, header http.Header) string {
 
 	req.Header = header
 
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: 30 * time.Second, Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
 		Logger("error", err.Error())
