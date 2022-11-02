@@ -15,7 +15,7 @@ func SlashAccess(c echo.Context) error {
 	sesguild := modules.ReadSession(c, "guild")
 	if seslogin == "true" {
 		if sesguild == "true" {
-			return c.HTML(http.StatusOK, "<h1>LoginComplited!</h1>")
+			return c.Redirect(http.StatusOK, config.Redirectafter)
 		}else {
 			return modules.GuildErrorPages(c)
 		}
