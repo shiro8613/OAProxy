@@ -72,7 +72,7 @@ func ConfigLoad() {
 		Logger("error", err.Error())
 	}
 
-	yaml.Unmarshal(b, configer)
+	yaml.Unmarshal(b, &configer)
 
 	if rg.MatchString(configer.Domain) {
 		Logger("error", "Enter your domain in this format example.com or xxx.example.com")
