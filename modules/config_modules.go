@@ -62,10 +62,9 @@ type config struct {
 	ExternalHost	map[string]externalhost_conf	`yaml:"external_host_pages"`
 }
 
-var configer []config
+var configer config
 
 func ConfigLoad() {
-	config := config{}
 	rg := regexp.MustCompile(`^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$`)
 	path := GetFlag().Config_path
 	b, err := os.ReadFile(path)
@@ -73,19 +72,13 @@ func ConfigLoad() {
 		Logger("error", err.Error())
 	}
 
-	yaml.Unmarshal(b, &config)
+	yaml.Unmarshal(b, configer)
 
-	if rg.MatchString(config.Domain) {
+	if rg.MatchString(configer.Domain) {
 		Logger("error", "Enter your domain in this format example.com or xxx.example.com")
 	}
-
-	configer = append(configer, config)
-
 }
 
 func GetConfig() config {
-	for _, v := range configer {
-		return v
-	}
-	return configer[0]
+	return configer
 }
