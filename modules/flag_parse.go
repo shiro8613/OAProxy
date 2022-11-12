@@ -11,7 +11,7 @@ type path struct {
 var (
 	config_path = flag.String("config", "./config.yml", "config.yml path")
 	log_dir_path = flag.String("logDir", "./Logs", "Log Directory path")
-	userlist_path = flag.String("userlist", "./Userlog.log", "LoginUserList path")
+	userlist_path = flag.String("userlist", "./Userlog.json", "LoginUserList path")
 )
 
 var path_config []path

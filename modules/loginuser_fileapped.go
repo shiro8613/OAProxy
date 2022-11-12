@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -16,43 +15,62 @@ type UserLogJson struct {
 	Ip		string 	`json:"ip"`
 }
 
+func remove(s []UserLogJson, i int) []UserLogJson {
+    s[i] = s[len(s)-1]
+    return s[:len(s)-1]
+}
+
+func Exists(name string) bool {
+    _, err := os.Stat(name)
+    return os.IsNotExist(err)
+}
+
 func AppendUser(ip string,	id string, name string, disc string, nick string ) {
 	path := GetFlag().UserList_path
 	time := time.Now().Local().Format(time.RFC1123)
 
-	file, err := os.OpenFile(path, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0755)
-    if err != nil {
+	if Exists(path) {
+		os.Create(path)
+	}
+
+	userJsonbs := []UserLogJson{}
+
+	rfile, err := os.ReadFile(path)
+	if err != nil {
 		Logger("error", err.Error())
-    }
-    defer file.Close()
+	}
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		jdata := &UserLogJson{}
-		err = json.Unmarshal(scanner.Bytes(), jdata)
-		if err != nil {
-			Logger("error", err.Error())
-		}
+	json.Unmarshal(rfile, &userJsonbs)
 
-		if jdata.Id == id {
-			return 
-			
-		} else {
-			userlog := UserLogJson{
-				Time: time,
-				Name: fmt.Sprintf("%s#%s",name ,disc),
-				Nick: nick,
-				Id: id,
-				Ip: ip,
-			}
-
-			json_, err := json.Marshal(userlog)
-			if err != nil {
-				Logger("error", err.Error())
-			}
-
-			fmt.Fprintln(file, string(json_))
-
+	os.Remove(path)
+	
+	for i, userJsonb := range userJsonbs {
+		if userJsonb.Id == id {
+			userJsonbs = remove(userJsonbs, i)				
 		}
 	}
+
+	userLog := UserLogJson {
+		Time: time,
+		Name: fmt.Sprintf("%s#%s", name, disc),
+		Nick: nick,
+		Id: id,
+		Ip: ip,
+	}
+
+	userJsonbs = append(userJsonbs, userLog)
+
+	b, err := json.Marshal(userJsonbs)
+	if err != nil {
+		Logger("error",	err.Error())
+	}
+
+	file, err := os.Create(path)
+	if err != nil {
+		Logger("error", err.Error())
+	}
+
+	defer file.Close()
+
+	file.Write(b)
 }
