@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"fmt"
-
+	
 	"github.com/flan0910/OAProxy/modules"
 
 	"github.com/labstack/echo/v4"
@@ -27,8 +27,6 @@ func MiddleProx(e echo.Echo) {
 		if err != nil {
 			modules.Logger("error", err.Error())
 		}
-
-		rewriter := fmt.Sprintf("^%s", serverMap.Location)
 
 		target := []*middleware.ProxyTarget{
 			{
@@ -68,20 +66,10 @@ func MiddleProx(e echo.Echo) {
 						}
 					}
 					
-				}, middleware.ProxyWithConfig(middleware.ProxyConfig{
-					Balancer: middleware.NewRandomBalancer(target),
-					Rewrite: map[string]string{
-						rewriter : "",
-					},
-				}))
+				}, middleware.Proxy(middleware.NewRandomBalancer(target)))
 			}
 		}
-		g.Use(middleware.ProxyWithConfig(middleware.ProxyConfig{
-			Balancer: middleware.NewRandomBalancer(target),
-			Rewrite: map[string]string{
-				rewriter : "",
-			},
-		}))
+		g.Use(middleware.Proxy(middleware.NewRandomBalancer(target)))
 	}
 }
 
