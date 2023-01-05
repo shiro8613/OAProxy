@@ -14,7 +14,7 @@ type user struct {
 type LoginUserConf struct {
 	Nick	string			`json:"nick"`
 	User	user 			`json:"user"`
-	Roles 	[]interface{}	`json:"roles"`
+	Roles 	[]string	`json:"roles"`
 }
 
 func LoginUserParse(data string) LoginUserConf {

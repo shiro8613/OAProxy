@@ -1,8 +1,10 @@
 package modules
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
-func CheckRole(inter []interface{}) string{
+func CheckRole(inter []string) string{
 	roles := GetConfig().Oauth2.Roles
 	var myroles []string
 
@@ -21,15 +23,15 @@ func CheckRole(inter []interface{}) string{
     return string(e)
 }
 
-func RoleTest(inter interface{}, data string) bool{
+func RoleTest(inter []string, data string) bool{
 	var rolejs []string
 	err := json.Unmarshal([]byte(data), &rolejs)
 	if err != nil {
 		Logger("error", err.Error())
 	}
 
-	for v := range rolejs {
-		for val := range inter.([]interface{}) {
+	for _, v := range rolejs {
+		for _, val := range inter {
 			if val == v {
 				return true
 			}

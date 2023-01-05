@@ -32,7 +32,7 @@ type oauth2_conf struct	 {
 	Client_secret	string				`map:"client_secret"`
 	Callback		string				`map:"callback"`
 	Guild_id		int64				`map:"guild_id"`
-	Roles			map[string]int64	`map:"roles"`
+	Roles			map[string]string	`map:"roles"`
 }
 
 type server_conf struct {
