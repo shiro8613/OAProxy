@@ -28,6 +28,14 @@ func MiddleProx(e echo.Echo) {
 			modules.Logger("error", err.Error())
 		}
 
+		rewriter := fmt.Sprintf("^%s", serverMap.Location)
+
+		g.Use(middleware.ProxyWithConfig(middleware.ProxyConfig{
+			Rewrite: map[string]string{
+				rewriter : "",
+			},
+		}))
+
 		target := []*middleware.ProxyTarget{
 			{
 				URL: urls,
