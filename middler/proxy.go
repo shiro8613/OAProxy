@@ -30,12 +30,6 @@ func MiddleProx(e echo.Echo) {
 
 		rewriter := fmt.Sprintf("^%s", serverMap.Location)
 
-		g.Use(middleware.ProxyWithConfig(middleware.ProxyConfig{
-			Rewrite: map[string]string{
-				rewriter : "",
-			},
-		}))
-
 		target := []*middleware.ProxyTarget{
 			{
 				URL: urls,
@@ -74,10 +68,20 @@ func MiddleProx(e echo.Echo) {
 						}
 					}
 					
-				}, middleware.Proxy(middleware.NewRandomBalancer(target)))
+				}, middleware.ProxyWithConfig(middleware.ProxyConfig{
+					Balancer: middleware.NewRandomBalancer(target),
+					Rewrite: map[string]string{
+						rewriter : "",
+					},
+				}))
 			}
 		}
-		g.Use(middleware.Proxy(middleware.NewRandomBalancer(target)))
+		g.Use(middleware.ProxyWithConfig(middleware.ProxyConfig{
+			Balancer: middleware.NewRandomBalancer(target),
+			Rewrite: map[string]string{
+				rewriter : "",
+			},
+		}))
 	}
 }
 
