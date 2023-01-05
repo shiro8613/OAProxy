@@ -38,28 +38,28 @@ server:
   # (serverName):
   #   location: "/app" -> http://yourdomain/app
   #   address: "http://backend/app" reverseAddress
-  #   privart: true or false <- roleCheck
+  #   private: true or false <- roleCheck
   #   access_roles: <- access possible roles
-  #     - "admin" <- RoleName => If it was privart - ""
+  #     - "admin" <- RoleName => If it was private - ""
 
   example1:
     location: "/example1"
     address: "http://localhost:8081"
-    privart: false
+    private: false
     access_roles:
       - ""
 
   example2:
     location: "/example2"
     address: "http://localhost:8082"
-    privart: false
+    private: false
     access_roles:
       - ""
 
   example3:
     location: "/example3"
     address: "http://localhost:8083"
-    privart: true
+    private: true
     access_roles:
       - "admin"
 
@@ -79,7 +79,6 @@ external_host_pages:
     redirect: false
     address: http://localhost:8084
 
-
   guild_error:
     enable: true
     redirect: false
@@ -90,7 +89,7 @@ external_host_pages:
     redirect: false
     address: http://localhost:8086
 
-  privart_error:
+  private_error:
     enable: false
     redirect: false
     address: http://localhost:8087

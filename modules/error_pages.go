@@ -56,8 +56,8 @@ func LoginErrorPages(c echo.Context) error{
 	}
 }
 
-func PrivartErrorPages(c echo.Context) error{
-	config := GetConfig().ExternalHost["privart_error"]
+func PrivateErrorPages(c echo.Context) error{
+	config := GetConfig().ExternalHost["private_error"]
 
 	if config.Enable {
 		if config.Redirect {

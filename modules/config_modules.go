@@ -38,7 +38,7 @@ type oauth2_conf struct	 {
 type server_conf struct {
 	Location		string		`map:"location"`
 	Address			string		`map:"address"`
-	Privart			bool		`map:"privart"`
+	Private			bool		`map:"private"`
 	Access_roles	[]string	`map:"access_roles"`
 }
 type externalhost_conf struct {

@@ -54,12 +54,12 @@ func MiddleProx(e echo.Echo) {
 					}
 
 				}, func(next echo.HandlerFunc) echo.HandlerFunc {
-					return func(c echo.Context) error { //privert
-						if serverMap.Privart {
+					return func(c echo.Context) error { //private
+						if serverMap.Private {
 							if modules.RoleTest(serverMap.Access_roles, modules.ReadSession(c, "role")) {
 								return next(c)
 							}else {
-								return modules.PrivartErrorPages(c)
+								return modules.PrivateErrorPages(c)
 							}
 						} else {
 							return next(c)
